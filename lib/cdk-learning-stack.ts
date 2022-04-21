@@ -3,6 +3,10 @@ import { Construct } from 'constructs';
 // import * as sqs from 'aws-cdk-lib/aws-sqs';
 
 import * as cdk from '@aws-cdk/core';
+import * as rds from 'aws-cdk-lib/aws-rds';
+
+
+
 
 // CHANGE: This is where you import the classes from the module:
 //import { Vpc, SubnetType } from '@aws-cdk/aws-ec2';
@@ -44,6 +48,19 @@ export class CdkLearningStack extends Stack {
         description: 'The URL of our web app',
         exportName: 'WebAppURL',
       });
+
+
+
+      const engine = rds.DatabaseInstanceEngine.postgres({ version: rds.PostgresEngineVersion.VER_12_9 });
+      new rds.DatabaseInstance(this, 'InstanceWithUsername', {
+        engine,
+        vpc,
+        credentials: rds.Credentials.fromGeneratedSecret('postgres'), // Creates an admin user of postgres with a generated password
+        vpcSubnets: {
+          subnetType: SubnetType.PRIVATE_ISOLATED
+        }
+      });
+
 
   }
 }
